@@ -19,5 +19,8 @@ int main() {
 	skipList.insertElement(12, "xiu"); 
 	skipList.insertElement(19, "yang"); 
 
+    skipList.searchElement(9);
+    skipList.searchElement(18);
+
     skipList.displayList();
 }

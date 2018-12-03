@@ -77,6 +77,7 @@ public:
     Node<K, V>* createNode(K, V, int);
     void insertElement(K, V);
     void displayList();
+    bool searchElement(K);
 
 private:    
     // Maximum level of the skip list 
@@ -161,6 +162,31 @@ void SkipList<K, V>::displayList() {
     }
 }
 
+// Search for element in skip list 
+template<typename K, typename V> 
+bool SkipList<K, V>::searchElement(K key) {
+    
+    Node<K, V> *current = header;
+
+    // start from highest level of skip list
+    for (int i = skipListLevel; i >= 0; i--) {
+        while (current->forward[i] && current->forward[i]->getKey() < key) {
+            current = current->forward[i];
+        }
+    }
+
+    //reached level 0 and advance pointer to right node, which we search
+    current = current->forward[0];
+
+    // if current node have key equal to searched key, we get it
+    if (current and current->getKey() == key) {
+        std::cout << "Found key: " << key << ", value: " << current->getValue() << std::endl;
+        return true;
+    }
+
+    std::cout << "Not Found Key:" << key << std::endl;
+    return false;
+}
 
 //
 template<typename K, typename V> 
