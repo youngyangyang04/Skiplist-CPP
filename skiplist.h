@@ -10,6 +10,9 @@
 #include <cstdlib>
 #include <cmath>
 #include <cstring>
+#include <mutex>
+
+std::mutex mtx;     // mutex for critical section
 
 //Class template to implement node
 template<typename K, typename V> 
@@ -78,6 +81,7 @@ public:
     void insertElement(K, V);
     void displayList();
     bool searchElement(K);
+    void deleteElement(K);
 
 private:    
     // Maximum level of the skip list 
@@ -100,6 +104,7 @@ Node<K, V>* SkipList<K, V>::createNode(const K k, const V v, int level) {
 // Insert given key and value in skip list 
 template<typename K, typename V>
 void SkipList<K, V>::insertElement(const K key, const V value) {
+    mtx.lock();
     
     Node<K, V> *current = this->header;
 
@@ -145,6 +150,7 @@ void SkipList<K, V>::insertElement(const K key, const V value) {
 
         std::cout << "Successfully inserted key:" << key << ", value:" << value << std::endl;
     }
+    mtx.unlock();
 }
 
 // Display skip list 
@@ -160,6 +166,47 @@ void SkipList<K, V>::displayList() {
         }
         std::cout << std::endl;
     }
+}
+
+// Delete element from skip list 
+template<typename K, typename V> 
+void SkipList<K, V>::deleteElement(K key) {
+
+    mtx.lock();
+
+    Node<K, V> *current = this->header; 
+
+    Node<K, V> *update[MAX_LEVEL+1];
+    memset(update, 0, sizeof(Node<K, V>*)*(MAX_LEVEL+1));
+
+    // start from highest level of skip list
+    for (int i = skipListLevel; i >= 0; i--) {
+        while (current->forward[i] !=NULL && current->forward[i]->getKey() < key) {
+            current = current->forward[i];
+        }
+        update[i] = current;
+    }
+
+    current = current->forward[0];
+
+    if (current != NULL && current->getKey() == key) {
+       
+        // start for lowest level and delete the current node of each level
+        for (int i = 0; i <= skipListLevel; i++) {
+
+            // if at level i, next node is not target node, break the loop.
+            if (update[i]->forward[i] != current) 
+                break;
+            update[i]->forward[i] = current->forward[i];
+        }
+
+        // Remove levels which have no elements
+        while (skipListLevel > 0 && header->forward[skipListLevel] == 0) 
+            skipListLevel --; 
+
+        std::cout << "Successfully deleted key "<< key << std::endl;
+    }
+    mtx.unlock();
 }
 
 // Search for element in skip list 
@@ -206,7 +253,7 @@ SkipList<K, V>::SkipList(int MAX_LEVEL) {
 
 template<typename K, typename V> 
 SkipList<K, V>::~SkipList() {
-    // delete header;
+    delete header;
 }
 
 template<typename K, typename V>

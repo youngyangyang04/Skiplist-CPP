@@ -22,5 +22,10 @@ int main() {
     skipList.searchElement(9);
     skipList.searchElement(18);
 
+
+    skipList.displayList();
+
+    skipList.deleteElement(3);
+
     skipList.displayList();
 }
