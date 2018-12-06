@@ -13,6 +13,8 @@
 #include <mutex>
 #include <fstream>
 
+#define STORE_FILE "store/dumpFile"
+
 std::mutex mtx;     // mutex for critical section
 
 //Class template to implement node
@@ -84,7 +86,7 @@ public:
     bool searchElement(K);
     void deleteElement(K);
     void dumpFile();
-    void loadFile();
+    void loadFile(std::string& path);
 
 private:    
     // Maximum level of the skip list 
@@ -98,6 +100,8 @@ private:
 
     std::ofstream fileWriter;
     std::ifstream fileReader;
+
+    void getKeyValueFromString(const std::string& str, std::string& key, std::string& value);
 
 };
 
@@ -179,7 +183,7 @@ void SkipList<K, V>::displayList() {
 template<typename K, typename V> 
 void SkipList<K, V>::dumpFile() {
     std::cout << "dumpFile-----------------" << std::endl;
-    fileWriter.open("./store/dumpFile");
+    fileWriter.open(STORE_FILE);
     Node<K, V> *node = this->header->forward[0]; 
     while (node != NULL) {
         fileWriter << node->getKey() << ":" << node->getValue() << ";\n";
@@ -190,14 +194,24 @@ void SkipList<K, V>::dumpFile() {
     return ;
 }
 
+// Load data from disk
 template<typename K, typename V> 
-void SkipList<K, V>::loadFile() {
-    fileReader.open("./store/dumpFile");
+void SkipList<K, V>::loadFile(std::string& path) {
+    fileReader.open(path);
     std::cout << "loadFile-----------------" << std::endl;
     std::string line;
+    std::string key, value;
     while (getline(fileReader, line)){
-        std::cout << line << '\n';
+        getKeyValueFromString(line, key, value);
+        std::cout << "key:" << key << "value:" << value << std::endl;
     }
+}
+
+template<typename K, typename V>
+void SkipList<K, V>::getKeyValueFromString(const  std::string& str, std::string& key, std::string& value) {
+    std::string delimiter = ":";
+    key = str.substr(0, str.find(delimiter));
+    value = str.substr(str.find(delimiter)+1, str.length());
 }
 
 // Delete element from skip list 

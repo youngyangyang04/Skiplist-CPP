@@ -22,7 +22,8 @@ int main() {
 
     skipList.dumpFile();
 
-    skipList.loadFile();
+    std::string path = "./store/dumpFile";
+    skipList.loadFile(path);
 
     skipList.searchElement(9);
     skipList.searchElement(18);
