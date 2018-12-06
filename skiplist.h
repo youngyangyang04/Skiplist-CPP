@@ -11,6 +11,7 @@
 #include <cmath>
 #include <cstring>
 #include <mutex>
+#include <fstream>
 
 std::mutex mtx;     // mutex for critical section
 
@@ -82,6 +83,8 @@ public:
     void displayList();
     bool searchElement(K);
     void deleteElement(K);
+    void dumpFile();
+    void loadFile();
 
 private:    
     // Maximum level of the skip list 
@@ -92,6 +95,10 @@ private:
 
     // pointer to header node 
     Node<K, V> *header;
+
+    std::ofstream fileWriter;
+    std::ifstream fileReader;
+
 };
 
 // create new node 
@@ -168,6 +175,31 @@ void SkipList<K, V>::displayList() {
     }
 }
 
+// Dump data in memory to file 
+template<typename K, typename V> 
+void SkipList<K, V>::dumpFile() {
+    std::cout << "dumpFile-----------------" << std::endl;
+    fileWriter.open("./store/dumpFile");
+    Node<K, V> *node = this->header->forward[0]; 
+    while (node != NULL) {
+        fileWriter << node->getKey() << ":" << node->getValue() << ";\n";
+        std::cout << node->getKey() << ":" << node->getValue() << ";\n";
+        node = node->forward[0];
+    }
+    fileWriter.flush();
+    return ;
+}
+
+template<typename K, typename V> 
+void SkipList<K, V>::loadFile() {
+    fileReader.open("./store/dumpFile");
+    std::cout << "loadFile-----------------" << std::endl;
+    std::string line;
+    while (getline(fileReader, line)){
+        std::cout << line << '\n';
+    }
+}
+
 // Delete element from skip list 
 template<typename K, typename V> 
 void SkipList<K, V>::deleteElement(K key) {
@@ -212,6 +244,7 @@ void SkipList<K, V>::deleteElement(K key) {
 // Search for element in skip list 
 template<typename K, typename V> 
 bool SkipList<K, V>::searchElement(K key) {
+    std::cout << "searchElement-----------------" << std::endl;
     
     Node<K, V> *current = header;
 
@@ -235,7 +268,7 @@ bool SkipList<K, V>::searchElement(K key) {
     return false;
 }
 
-//
+// construct skip list
 template<typename K, typename V> 
 SkipList<K, V>::SkipList(int MAX_LEVEL) {
 
@@ -247,12 +280,16 @@ SkipList<K, V>::SkipList(int MAX_LEVEL) {
     K k;
     V v;
     this->header = new Node<K, V>(k, v, MAX_LEVEL);
-    // this->header = new Node<K, V>();
+
 
 };
 
 template<typename K, typename V> 
 SkipList<K, V>::~SkipList() {
+    if (fileWriter.is_open())
+        fileWriter.close();
+    if (fileReader.is_open())
+        fileReader.close();
     delete header;
 }
 

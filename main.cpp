@@ -7,6 +7,7 @@
  ************************************************************************/
 #include <iostream>
 #include "skiplist.h"
+#define FILE_PATH "./store/dumpFile"
 
 int main() {
     // 在这里为什么要手工传，因为不用类型的 k，v 初始化的参数是不一样的。例如string，就不能把
@@ -18,6 +19,10 @@ int main() {
 	skipList.insertElement(9, "sun"); 
 	skipList.insertElement(12, "xiu"); 
 	skipList.insertElement(19, "yang"); 
+
+    skipList.dumpFile();
+
+    skipList.loadFile();
 
     skipList.searchElement(9);
     skipList.searchElement(18);
