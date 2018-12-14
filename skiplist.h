@@ -45,7 +45,6 @@ private:
 
 template<typename K, typename V> 
 Node<K, V>::Node(const K k, const V v, int level) {
-    std::cout << "test222222"<<std::endl;
     this->key = k;
     this->value = v;
     this->nodeLevel = level; 
@@ -203,6 +202,7 @@ void SkipList<K, V>::loadFile(std::string& path) {
     std::string key, value;
     while (getline(fileReader, line)){
         getKeyValueFromString(line, key, value);
+        insertElement(key, value);
         std::cout << "key:" << key << "value:" << value << std::endl;
     }
 }
@@ -290,7 +290,6 @@ SkipList<K, V>::SkipList(int MAX_LEVEL) {
     this->skipListLevel = 0;
 
     // create header node and initialize key and value to null
-    std::cout << "test111111" << std::endl;
     K k;
     V v;
     this->header = new Node<K, V>(k, v, MAX_LEVEL);
