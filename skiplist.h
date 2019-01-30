@@ -114,7 +114,6 @@ Node<K, V>* SkipList<K, V>::createNode(const K k, const V v, int level) {
 // Insert given key and value in skip list 
 template<typename K, typename V>
 void SkipList<K, V>::insertElement(const K key, const V value) {
-    mtx.lock();
     
     Node<K, V> *current = this->header;
 
@@ -152,15 +151,16 @@ void SkipList<K, V>::insertElement(const K key, const V value) {
         // create new node with random level generated 
         Node<K, V>* insertedNode = createNode(key, value, rLevel);
 
+        mtx.lock();
         // insert node 
         for (int i = 0; i <= rLevel; i++) {
             insertedNode->forward[i] = update[i]->forward[i];
             update[i]->forward[i] = insertedNode;
         }
+        mtx.unlock();
 
         std::cout << "Successfully inserted key:" << key << ", value:" << value << std::endl;
     }
-    mtx.unlock();
 }
 
 // Display skip list 
@@ -185,7 +185,7 @@ void SkipList<K, V>::dumpFile() {
     fileWriter.open(STORE_FILE);
     Node<K, V> *node = this->header->forward[0]; 
     while (node != NULL) {
-        fileWriter << node->getKey() << ":" << node->getValue() << ";\n";
+        fileWriter << node->getKey() << ":" << node->getValue() << "\n";
         std::cout << node->getKey() << ":" << node->getValue() << ";\n";
         node = node->forward[0];
     }
@@ -218,7 +218,6 @@ void SkipList<K, V>::getKeyValueFromString(const  std::string& str, std::string&
 template<typename K, typename V> 
 void SkipList<K, V>::deleteElement(K key) {
 
-    mtx.lock();
 
     Node<K, V> *current = this->header; 
 
@@ -246,13 +245,14 @@ void SkipList<K, V>::deleteElement(K key) {
             update[i]->forward[i] = current->forward[i];
         }
 
+        mtx.lock();
         // Remove levels which have no elements
         while (skipListLevel > 0 && header->forward[skipListLevel] == 0) 
             skipListLevel --; 
+        mtx.unlock();
 
         std::cout << "Successfully deleted key "<< key << std::endl;
     }
-    mtx.unlock();
 }
 
 // Search for element in skip list 

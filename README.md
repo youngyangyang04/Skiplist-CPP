@@ -2,10 +2,6 @@
 
  A tiny KV storage based on skiplist written in C++ language
 
-# code style
-
-* lower camel case
-
 # interface
 
 * insertElement
@@ -16,25 +12,28 @@
 * loadFile
 
 # performance data  
+## insert
 
-skiplist tree high:12
+skiplist tree high:18
+insert random key
 
-|insertElement num (w) | timecost (s)  | 
+|insert element num (w) | timecost (s)  |
 |---|---|
-|10 |1.20767 |
-|50 |5.27127 | 
-|100 |10.8861 | 
+|10 |0.316763 |
+|50 |1.86778 |
+|100 |4.10648 |
 
-qps: 10w
+qps: 24.39w
 
+## get
 
-|searchElement (w) |timecost (s) | 
-|---|---|
-|10|1.66063 |
-|50|8.83304 |
-|100|16.8302 |
+|search element (w) |timecost (s) |skiplist size (w)|
+|---|---| --- |
+|10|0.47148 |10|
+|50|2.56373 |50|
+|100|5.43204 |100|
 
-qps:7W
+qps:18.41w
 
 
 # code coverage report 
@@ -60,6 +59,5 @@ insert the data from file
 [skiplist](https://github.com/greensky00/skiplist)
 
 # Todo 
-
 
 
