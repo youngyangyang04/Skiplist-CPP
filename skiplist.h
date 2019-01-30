@@ -16,6 +16,7 @@
 #define STORE_FILE "store/dumpFile"
 
 std::mutex mtx;     // mutex for critical section
+std::string delimiter = ":";
 
 //Class template to implement node
 template<typename K, typename V> 
@@ -29,14 +30,16 @@ public:
 
     ~Node();
 
-    K getKey() const;
+    K get_key() const;
 
-    V getValue() const;
+    V get_value() const;
+
+    void set_value(V);
     
     // Linear array to hold pointers to next node of different level
     Node<K, V> **forward;
 
-    int nodeLevel;
+    int node_level;
 
 private:
     K key;
@@ -47,12 +50,12 @@ template<typename K, typename V>
 Node<K, V>::Node(const K k, const V v, int level) {
     this->key = k;
     this->value = v;
-    this->nodeLevel = level; 
+    this->node_level = level; 
 
-    // // level + 1, because array index is from 0 - level
+    // level + 1, because array index is from 0 - level
     this->forward = new Node<K, V>*[level+1];
     
-	// // Fill forward array with 0(NULL) 
+	// Fill forward array with 0(NULL) 
     memset(this->forward, 0, sizeof(Node<K, V>*)*(level+1));
 };
 
@@ -62,13 +65,17 @@ Node<K, V>::~Node() {
 };
 
 template<typename K, typename V> 
-K Node<K, V>::getKey() const {
+K Node<K, V>::get_key() const {
     return key;
 };
 
 template<typename K, typename V> 
-V Node<K, V>::getValue() const {
+V Node<K, V>::get_value() const {
     return value;
+};
+template<typename K, typename V> 
+void Node<K, V>::set_value(V value) {
+    this->value=value;
 };
 
 // Class template for Skip list
@@ -78,100 +85,117 @@ class SkipList {
 public: 
     SkipList(int);
     ~SkipList();
-    int randomLevel();
-    Node<K, V>* createNode(K, V, int);
-    void insertElement(K, V);
-    void displayList();
-    bool searchElement(K);
-    void deleteElement(K);
-    void dumpFile();
-    void loadFile(std::string& path);
+    int get_random_level();
+    Node<K, V>* create_node(K, V, int);
+    int insert_element(K, V);
+    void display_list();
+    bool search_element(K);
+    void delete_element(K);
+    void dump_file();
+    void load_file();
+    int size();
+
+private:
+    void get_key_value_from_string(const std::string& str, std::string* key, std::string* value);
+    bool is_valid_string(const std::string& str);
 
 private:    
     // Maximum level of the skip list 
-    int MAX_LEVEL;
+    int _max_level;
 
     // current level of skip list 
-    int skipListLevel;
+    int _skip_list_level;
 
     // pointer to header node 
-    Node<K, V> *header;
+    Node<K, V> *_header;
 
-    std::ofstream fileWriter;
-    std::ifstream fileReader;
+    // file operator
+    std::ofstream _file_writer;
+    std::ifstream _file_reader;
 
-    void getKeyValueFromString(const std::string& str, std::string& key, std::string& value);
-
+    // skiplist current element count
+    int _element_count;
 };
 
 // create new node 
 template<typename K, typename V>
-Node<K, V>* SkipList<K, V>::createNode(const K k, const V v, int level) {
+Node<K, V>* SkipList<K, V>::create_node(const K k, const V v, int level) {
     Node<K, V> *n = new Node<K, V>(k, v, level);
     return n;
 }
 
 // Insert given key and value in skip list 
+// return 1 means element exists  
+// return 0 means insert successfully
 template<typename K, typename V>
-void SkipList<K, V>::insertElement(const K key, const V value) {
+int SkipList<K, V>::insert_element(const K key, const V value) {
     
-    Node<K, V> *current = this->header;
+    mtx.lock();
+    Node<K, V> *current = this->_header;
 
     // create update array and initialize it 
     // update is array which put node that the node->forward[i] should be operated later
-    Node<K, V> *update[MAX_LEVEL+1];
-    memset(update, 0, sizeof(Node<K, V>*)*(MAX_LEVEL+1));  
+    Node<K, V> *update[_max_level+1];
+    memset(update, 0, sizeof(Node<K, V>*)*(_max_level+1));  
 
-    
     // start form highest level of skip list 
-    for(int i = skipListLevel; i >=0; i--) {
-        while(current->forward[i] != NULL && current->forward[i]->getKey() < key) 
+    for(int i = _skip_list_level; i >= 0; i--) {
+        while(current->forward[i] != NULL && current->forward[i]->get_key() < key) {
             current = current->forward[i]; 
+        }
         update[i] = current;
     }
 
     // reached level 0 and forward pointer to right node, which is desired to insert key.
     current = current->forward[0];
 
+    // if current node have key equal to searched key, we get it
+    if (current != NULL && current->get_key() == key) {
+        std::cout << "key: " << key << ", exists" << std::endl;
+        mtx.unlock();
+        return 1;
+    }
+
     // if current is NULL that means we have reached to end of the level 
     // if current's key is not equal to key that means we have to insert node between update[0] and current node 
-    if (current == NULL || current->getKey() != key) {
+    if (current == NULL || current->get_key() != key ) {
         
         // Generate a random level for node
-        int rLevel = randomLevel();
+        int random_level = get_random_level();
 
         // If random level is greater thar skip list's current level, initialize update value with pointer to header
-        if (rLevel > skipListLevel) {
-            for (int i = skipListLevel+1; i < rLevel+1; i++) {
-                update[i] = header;
+        if (random_level > _skip_list_level) {
+            for (int i = _skip_list_level+1; i < random_level+1; i++) {
+                update[i] = _header;
             }
-            skipListLevel = rLevel;
+            _skip_list_level = random_level;
         }
 
         // create new node with random level generated 
-        Node<K, V>* insertedNode = createNode(key, value, rLevel);
-
-        mtx.lock();
+        Node<K, V>* inserted_node = create_node(key, value, random_level);
+        
         // insert node 
-        for (int i = 0; i <= rLevel; i++) {
-            insertedNode->forward[i] = update[i]->forward[i];
-            update[i]->forward[i] = insertedNode;
+        for (int i = 0; i <= random_level; i++) {
+            inserted_node->forward[i] = update[i]->forward[i];
+            update[i]->forward[i] = inserted_node;
         }
-        mtx.unlock();
-
         std::cout << "Successfully inserted key:" << key << ", value:" << value << std::endl;
+        _element_count ++;
     }
+    mtx.unlock();
+    return 0;
 }
 
 // Display skip list 
 template<typename K, typename V> 
-void SkipList<K, V>::displayList() {
+void SkipList<K, V>::display_list() {
+
     std::cout << "\n*****Skip List*****"<<"\n"; 
-    for (int i = 0; i <= skipListLevel; i++) {
-        Node<K, V> *node = this->header->forward[i]; 
+    for (int i = 0; i <= _skip_list_level; i++) {
+        Node<K, V> *node = this->_header->forward[i]; 
         std::cout << "Level " << i << ": ";
         while (node != NULL) {
-            std::cout << node->getKey() << ":" << node->getValue() << ";";
+            std::cout << node->get_key() << ":" << node->get_value() << ";";
             node = node->forward[i];
         }
         std::cout << std::endl;
@@ -180,91 +204,123 @@ void SkipList<K, V>::displayList() {
 
 // Dump data in memory to file 
 template<typename K, typename V> 
-void SkipList<K, V>::dumpFile() {
-    std::cout << "dumpFile-----------------" << std::endl;
-    fileWriter.open(STORE_FILE);
-    Node<K, V> *node = this->header->forward[0]; 
+void SkipList<K, V>::dump_file() {
+
+    std::cout << "dump_file-----------------" << std::endl;
+    _file_writer.open(STORE_FILE);
+    Node<K, V> *node = this->_header->forward[0]; 
+
     while (node != NULL) {
-        fileWriter << node->getKey() << ":" << node->getValue() << "\n";
-        std::cout << node->getKey() << ":" << node->getValue() << ";\n";
+        _file_writer << node->get_key() << ":" << node->get_value() << "\n";
+        std::cout << node->get_key() << ":" << node->get_value() << ";\n";
         node = node->forward[0];
     }
-    fileWriter.flush();
+
+    _file_writer.flush();
+    _file_writer.close();
     return ;
 }
 
 // Load data from disk
 template<typename K, typename V> 
-void SkipList<K, V>::loadFile(std::string& path) {
-    fileReader.open(path);
-    std::cout << "loadFile-----------------" << std::endl;
+void SkipList<K, V>::load_file() {
+
+    _file_reader.open(STORE_FILE);
+    std::cout << "load_file-----------------" << std::endl;
     std::string line;
-    std::string key, value;
-    while (getline(fileReader, line)){
-        getKeyValueFromString(line, key, value);
-        insertElement(key, value);
-        std::cout << "key:" << key << "value:" << value << std::endl;
+    std::string* key = new std::string();
+    std::string* value = new std::string();
+    while (getline(_file_reader, line)) {
+        get_key_value_from_string(line, key, value);
+        if (key->empty() || value->empty()) {
+            continue;
+        }
+        insert_element(*key, *value);
+        std::cout << "key:" << *key << "value:" << *value << std::endl;
     }
+    _file_reader.close();
+}
+
+// Get current SkipList size 
+template<typename K, typename V> 
+int SkipList<K, V>::size() { 
+    return _element_count;
 }
 
 template<typename K, typename V>
-void SkipList<K, V>::getKeyValueFromString(const  std::string& str, std::string& key, std::string& value) {
-    std::string delimiter = ":";
-    key = str.substr(0, str.find(delimiter));
-    value = str.substr(str.find(delimiter)+1, str.length());
+void SkipList<K, V>::get_key_value_from_string(const std::string& str, std::string* key, std::string* value) {
+
+    if(!is_valid_string(str)) {
+        return;
+    }
+    *key = str.substr(0, str.find(delimiter));
+    *value = str.substr(str.find(delimiter)+1, str.length());
+}
+
+template<typename K, typename V>
+bool SkipList<K, V>::is_valid_string(const std::string& str) {
+
+    if (str.empty()) {
+        return false;
+    }
+    if (str.find(delimiter) == std::string::npos) {
+        return false;
+    }
+    return true;
 }
 
 // Delete element from skip list 
 template<typename K, typename V> 
-void SkipList<K, V>::deleteElement(K key) {
+void SkipList<K, V>::delete_element(K key) {
 
-
-    Node<K, V> *current = this->header; 
-
-    Node<K, V> *update[MAX_LEVEL+1];
-    memset(update, 0, sizeof(Node<K, V>*)*(MAX_LEVEL+1));
+    mtx.lock();
+    Node<K, V> *current = this->_header; 
+    Node<K, V> *update[_max_level+1];
+    memset(update, 0, sizeof(Node<K, V>*)*(_max_level+1));
 
     // start from highest level of skip list
-    for (int i = skipListLevel; i >= 0; i--) {
-        while (current->forward[i] !=NULL && current->forward[i]->getKey() < key) {
+    for (int i = _skip_list_level; i >= 0; i--) {
+        while (current->forward[i] !=NULL && current->forward[i]->get_key() < key) {
             current = current->forward[i];
         }
         update[i] = current;
     }
 
     current = current->forward[0];
-
-    if (current != NULL && current->getKey() == key) {
+    if (current != NULL && current->get_key() == key) {
        
         // start for lowest level and delete the current node of each level
-        for (int i = 0; i <= skipListLevel; i++) {
+        for (int i = 0; i <= _skip_list_level; i++) {
 
             // if at level i, next node is not target node, break the loop.
             if (update[i]->forward[i] != current) 
                 break;
+
             update[i]->forward[i] = current->forward[i];
         }
 
-        mtx.lock();
         // Remove levels which have no elements
-        while (skipListLevel > 0 && header->forward[skipListLevel] == 0) 
-            skipListLevel --; 
-        mtx.unlock();
+        while (_skip_list_level > 0 && _header->forward[_skip_list_level] == 0) {
+            _skip_list_level --; 
+        }
 
         std::cout << "Successfully deleted key "<< key << std::endl;
+        _element_count --;
     }
+    mtx.unlock();
+    return;
 }
 
 // Search for element in skip list 
 template<typename K, typename V> 
-bool SkipList<K, V>::searchElement(K key) {
-    std::cout << "searchElement-----------------" << std::endl;
-    
-    Node<K, V> *current = header;
+bool SkipList<K, V>::search_element(K key) {
+
+    std::cout << "search_element-----------------" << std::endl;
+    Node<K, V> *current = _header;
 
     // start from highest level of skip list
-    for (int i = skipListLevel; i >= 0; i--) {
-        while (current->forward[i] && current->forward[i]->getKey() < key) {
+    for (int i = _skip_list_level; i >= 0; i--) {
+        while (current->forward[i] && current->forward[i]->get_key() < key) {
             current = current->forward[i];
         }
     }
@@ -273,8 +329,8 @@ bool SkipList<K, V>::searchElement(K key) {
     current = current->forward[0];
 
     // if current node have key equal to searched key, we get it
-    if (current and current->getKey() == key) {
-        std::cout << "Found key: " << key << ", value: " << current->getValue() << std::endl;
+    if (current and current->get_key() == key) {
+        std::cout << "Found key: " << key << ", value: " << current->get_value() << std::endl;
         return true;
     }
 
@@ -284,40 +340,38 @@ bool SkipList<K, V>::searchElement(K key) {
 
 // construct skip list
 template<typename K, typename V> 
-SkipList<K, V>::SkipList(int MAX_LEVEL) {
+SkipList<K, V>::SkipList(int max_level) {
 
-    this->MAX_LEVEL = MAX_LEVEL;
-    this->skipListLevel = 0;
+    this->_max_level = max_level;
+    this->_skip_list_level = 0;
+    this->_element_count = 0;
 
     // create header node and initialize key and value to null
     K k;
     V v;
-    this->header = new Node<K, V>(k, v, MAX_LEVEL);
-
-
+    this->_header = new Node<K, V>(k, v, _max_level);
 };
 
 template<typename K, typename V> 
 SkipList<K, V>::~SkipList() {
-    if (fileWriter.is_open())
-        fileWriter.close();
-    if (fileReader.is_open())
-        fileReader.close();
-    delete header;
+
+    if (_file_writer.is_open()) {
+        _file_writer.close();
+    }
+    if (_file_reader.is_open()) {
+        _file_reader.close();
+    }
+    delete _header;
 }
 
 template<typename K, typename V>
-int SkipList<K, V>::randomLevel()
-{
+int SkipList<K, V>::get_random_level(){
 
-    int k=1;
-
-    while (rand()%2)
-
+    int k = 1;
+    while (rand() % 2) {
         k++;
-
-    k=(k<MAX_LEVEL)?k:MAX_LEVEL;
-
+    }
+    k = (k < _max_level) ? k : _max_level;
     return k;
 };
 // vim: et tw=100 ts=4 sw=4 cc=120

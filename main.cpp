@@ -10,30 +10,34 @@
 #define FILE_PATH "./store/dumpFile"
 
 int main() {
-    // 在这里为什么要手工传，因为不用类型的 k，v 初始化的参数是不一样的。例如string，就不能把
-    // 这里还是要改成 初始化 三个参数，要不然去header 上的值容易崩， 也不用改，内部分装好。不回取
+
     SkipList<std::string, std::string> skipList(6);
-	skipList.insertElement("1", "a"); 
-	skipList.insertElement("3", "b"); 
-	skipList.insertElement("7", "c"); 
-	skipList.insertElement("8", "sun"); 
-	skipList.insertElement("9", "xiu"); 
-	skipList.insertElement("19", "yang"); 
+	skipList.insert_element("1", "a"); 
+	skipList.insert_element("3", "b"); 
+	skipList.insert_element("7", "c"); 
+	skipList.insert_element("8", "sun"); 
+	skipList.insert_element("9", "xiu"); 
+	skipList.insert_element("19", "yang"); 
+	skipList.insert_element("19", "yang"); 
+	skipList.insert_element("19", "yang"); 
+	skipList.insert_element("19", "yanuuuuuuuuuuuuuuuuuug"); 
 
-    skipList.displayList();
+    std::cout << "skipList size:" << skipList.size() << std::endl;
 
-    skipList.dumpFile();
+    skipList.dump_file();
 
-    // std::string path = "./store/dumpFile";
-    // skipList.loadFile(path);
+    // skipList.load_file();
 
-    // skipList.searchElement("9");
-    // skipList.searchElement("18");
+    skipList.search_element("9");
+    skipList.search_element("18");
 
 
-    // skipList.displayList();
+    skipList.display_list();
 
-    // skipList.deleteElement("3");
+    skipList.delete_element("3");
+    skipList.delete_element("7");
 
-    // skipList.displayList();
+    std::cout << "skipList size:" << skipList.size() << std::endl;
+
+    skipList.display_list();
 }

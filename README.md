@@ -10,8 +10,10 @@
 * displayList
 * dumpFile 
 * loadFile
+* size
 
 # performance data  
+
 ## insert
 
 skiplist tree high:18
@@ -50,14 +52,22 @@ lcov -d . -t 'skiplist_test' -o 'skiplist_test.info' -b . -c
 genhtml -o result skiplist_test.info
 ```
 
-# load 
-insert the data from file
+# USAGE
 
-[Skip List](https://www.geeksforgeeks.org/skip-list-set-3-searching-deletion/)
-[fstream](http://www.cplusplus.com/doc/tutorial/files/)
-[SkipListPro](https://github.com/HiWong/SkipListPro)
-[skiplist](https://github.com/greensky00/skiplist)
+Just include skiplist.h in your code
+
+```
+make            // complie demo main.cpp
+./bin/main      // run 
+```
+
+Test performance data 
+
+```
+sh stress_test_start.sh 
+```
+
 
 # Todo 
 
-
+* stress test is not auto
