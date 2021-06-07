@@ -1,7 +1,7 @@
 /* ************************************************************************
 > File Name:     stress_test.cpp
-> Author:        sunxiuyang
-> Mail:          sunxiuyang@baidu.com 
+> Author:        程序员Carl
+> 微信公众号:    代码随想录
 > Created Time:  Sun 16 Dec 2018 11:56:04 AM CST
 > Description:   
  ************************************************************************/

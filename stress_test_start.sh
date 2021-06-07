@@ -1,7 +1,7 @@
 #########################################################################
 # File Name:    stress_test_start.sh
-# Author:       sunxiuyang
-# mail:         sunxiuyang04@gmail.com
+# Author:        程序员Carl
+# 微信公众号:    代码随想录
 # Created Time: Wed Jan 30 20:05:15 2019
 #########################################################################
 #!/bin/bash

@@ -1,7 +1,7 @@
 /* ************************************************************************
 > File Name:     main.cpp
-> Author:        sunxiuyang
-> Mail:          sunxiuyang04@gmail.com 
+> Author:        程序员Carl
+> 微信公众号:    代码随想录
 > Created Time:  Sun Dec  2 20:21:41 2018
 > Description:   
  ************************************************************************/
@@ -12,15 +12,13 @@
 int main() {
 
     SkipList<std::string, std::string> skipList(6);
-	skipList.insert_element("1", "a"); 
-	skipList.insert_element("3", "b"); 
-	skipList.insert_element("7", "c"); 
-	skipList.insert_element("8", "sun"); 
-	skipList.insert_element("9", "xiu"); 
-	skipList.insert_element("19", "yang"); 
-	skipList.insert_element("19", "yang"); 
-	skipList.insert_element("19", "yang"); 
-	skipList.insert_element("19", "yanuuuuuuuuuuuuuuuuuug"); 
+	skipList.insert_element("1", "学"); 
+	skipList.insert_element("3", "算法"); 
+	skipList.insert_element("7", "认准"); 
+	skipList.insert_element("8", "微信公众号：代码随想录"); 
+	skipList.insert_element("9", "学习"); 
+	skipList.insert_element("19", "算法不迷路"); 
+	skipList.insert_element("19", "赶快关注吧你会发现详见很晚！"); 
 
     std::cout << "skipList size:" << skipList.size() << std::endl;
 
