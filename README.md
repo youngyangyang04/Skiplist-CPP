@@ -87,7 +87,7 @@ sh stress_test_start.sh
 
 <a name="公众号"></a>
 
-![](./pics/公众号.png)
+![](https://github.com/youngyangyang04/leetcode-master/blob/master/pics/%E5%85%AC%E4%BC%97%E5%8F%B7.png)
 
 
 
