@@ -102,7 +102,7 @@ sh stress_test_start.sh
 
 <a name="公众号"></a>
 
-![](https://github.com/youngyangyang04/leetcode-master/blob/master/pics/%E5%85%AC%E4%BC%97%E5%8F%B7.png)
+![](https://code-thinking.cdn.bcebos.com/pics/01%E4%BA%8C%E7%BB%B4%E7%A0%81.jpg)
 
 
 
