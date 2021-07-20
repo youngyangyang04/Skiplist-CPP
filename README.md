@@ -83,6 +83,11 @@ make            // complie demo main.cpp
 sh stress_test_start.sh 
 ```
 
+# 待优化 
+
+* delete的时候没有释放内存
+* 压力测试并不是全自动的
+
 # 关于作者
 
 大家好，我是程序员Carl，哈工大师兄，ACM 校赛、黑龙江省赛、东北四省赛金牌、亚洲区域赛奖牌获得者，先后在腾讯和百度从事分布式技术研发。
