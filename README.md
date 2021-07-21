@@ -6,6 +6,7 @@
   <a href="https://mp.weixin.qq.com/s/QVF6upVMSbgvZy8lHZS3CQ"><img src="https://img.shields.io/badge/知识星球-代码随想录-blue" alt=""></a>
 </p>
 
+> 版权申明： 本项目为我（[程序员Carl](https://github.com/youngyangyang04)）的原创。引用本项目文章请注明出处，例如：转自https://github.com/youngyangyang04/Skiplist-CPP，发现恶意抄袭或搬运，会动用法律武器维护自己的权益。让我们一起维护一个良好的技术创作环境！
 
 # [English Version](./README-en.md)
 
