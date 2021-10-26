@@ -98,7 +98,8 @@ sh stress_test_start.sh
 也欢迎与我交流，备注：个人简单介绍 + 交流，围观朋友圈，做点赞之交（备注没有自我介绍不通过哦）
 
 <a name="微信"></a>
-<img src="https://img-blog.csdnimg.cn/20200814140330894.png" data-img="1" width="175" height="175">
+<img src="https://code-thinking-1253855093.file.myqcloud.com/pics/WechatIMG82.jpeg" data-img="1" width="175" height="175">
+
 
 # 公众号
 
