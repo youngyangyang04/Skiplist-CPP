@@ -111,12 +111,7 @@ sh stress_test_start.sh
 
 <a name="公众号"></a>
 
-<div align="center"><img src="https://code-thinking-1253855093.file.myqcloud.com/pics/20211026122841.png" data-img="1" width="500" height="500"></img></div> 
-
-![](https://code-thinking-1253855093.file.myqcloud.com/pics/20211026122841.png) 
-
-
-![](https://code-thinking.cdn.bcebos.com/pics/01%E4%BA%8C%E7%BB%B4%E7%A0%81.jpg)
+<div align="center"><img src="https://code-thinking-1253855093.file.myqcloud.com/pics/20211026122841.png" data-img="1" width="650" height="500"></img></div> 
 
 
 
