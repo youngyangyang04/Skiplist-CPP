@@ -98,7 +98,7 @@ sh stress_test_start.sh
 也欢迎与我交流，备注：个人简单介绍 + 交流，围观朋友圈，做点赞之交（备注没有自我介绍不通过哦）
 
 <a name="微信"></a>
-<img src="https://code-thinking-1253855093.file.myqcloud.com/pics/WechatIMG82.jpeg" data-img="1" width="175" height="175">
+<div align="center"><img src="https://code-thinking-1253855093.file.myqcloud.com/pics/WechatIMG82.jpeg" data-img="1" width="200" height="200"></img></div> 
 
 
 # 公众号
@@ -110,6 +110,11 @@ sh stress_test_start.sh
 **来看看就知道了，你会发现相见恨晚！**
 
 <a name="公众号"></a>
+
+<div align="center"><img src="https://code-thinking-1253855093.file.myqcloud.com/pics/20211026122841.png" data-img="1" width="500" height="500"></img></div> 
+
+![](https://code-thinking-1253855093.file.myqcloud.com/pics/20211026122841.png) 
+
 
 ![](https://code-thinking.cdn.bcebos.com/pics/01%E4%BA%8C%E7%BB%B4%E7%A0%81.jpg)
 
