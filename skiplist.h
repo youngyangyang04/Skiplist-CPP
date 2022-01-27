@@ -1,8 +1,8 @@
 /* ************************************************************************
 > File Name:     skiplist.h
-> Author:        程序员Carl
-> 微信公众号:    代码随想录
-> Created Time:  Sun Dec  2 19:04:26 2018
+> Author:        hrhrng
+> Email:         hrhrng@foxmail.com
+> Created Time:  2022/1/27
 > Description:   
  ************************************************************************/
 
@@ -90,6 +90,7 @@ public:
     int insert_element(K, V);
     void display_list();
     bool search_element(K);
+    int search_range(K, K);
     void delete_element(K);
     void dump_file();
     void load_file();
@@ -160,6 +161,7 @@ int SkipList<K, V>::insert_element(const K key, const V value) {
 
     // start form highest level of skip list 
     for(int i = _skip_list_level; i >= 0; i--) {
+        // forward[i]是某个结点在第i层的下一个结点
         while(current->forward[i] != NULL && current->forward[i]->get_key() < key) {
             current = current->forward[i]; 
         }
@@ -178,7 +180,7 @@ int SkipList<K, V>::insert_element(const K key, const V value) {
 
     // if current is NULL that means we have reached to end of the level 
     // if current's key is not equal to key that means we have to insert node between update[0] and current node 
-    if (current == NULL || current->get_key() != key ) {
+    if (current == NULL || current->get_key() != key ) { //不等于就大于
         
         // Generate a random level for node
         int random_level = get_random_level();
@@ -309,14 +311,10 @@ void SkipList<K, V>::delete_element(K key) {
     current = current->forward[0];
     if (current != NULL && current->get_key() == key) {
        
-        // start for lowest level and delete the current node of each level
-        for (int i = 0; i <= _skip_list_level; i++) {
-
-            // if at level i, next node is not target node, break the loop.
-            if (update[i]->forward[i] != current) 
-                break;
+        for (int i = current->node_level; i >= 0; --i) {
 
             update[i]->forward[i] = current->forward[i];
+
         }
 
         // Remove levels which have no elements
@@ -324,8 +322,12 @@ void SkipList<K, V>::delete_element(K key) {
             _skip_list_level --; 
         }
 
-        std::cout << "Successfully deleted key "<< key << std::endl;
+        // Release Memory
         _element_count --;
+        delete current;
+        std::cout << "Successfully deleted key "<< key << std::endl;
+    }else{
+        std::cout << "No Such Key" << key << std::endl;
     }
     mtx.unlock();
     return;
@@ -376,6 +378,40 @@ bool SkipList<K, V>::search_element(K key) {
     return false;
 }
 
+// Search for element in a range
+template<typename K, typename V>
+int SkipList<K, V>::search_range(K left, K right) {
+    
+    std::cout << "search element between " << left << " and " << right<< "-----------------" << std::endl;
+    Node<K, V> *current = _header;
+
+    int _result_count = 0;
+
+    // start from highest level of skip list
+    for (int i = _skip_list_level; i >= 0; i--) {
+        while (current->forward[i] && current->forward[i]->get_key() < left) {
+            current = current->forward[i];
+        }
+    }
+
+    //reached level 0 and advance pointer to right node, which we search
+    current = current->forward[0];
+
+    // if current node have key equal to searched key, we get it
+    while (current and current->get_key() <= right) {
+        std::cout << "Found key: " << current->get_key() << ", value: " << current->get_value() << std::endl;
+        current = current->forward[0];
+        _result_count++;
+    }
+
+    if(_result_count == 0){
+        std::cout << "No element in this range" << std::endl;
+    }
+
+    return _result_count;
+} 
+
+
 // construct skip list
 template<typename K, typename V> 
 SkipList<K, V>::SkipList(int max_level) {
@@ -399,17 +435,24 @@ SkipList<K, V>::~SkipList() {
     if (_file_reader.is_open()) {
         _file_reader.close();
     }
-    delete _header;
+
+    Node<K, V>* current = _header;
+
+    while(current) {
+        Node<K, V>* tmp = current;
+        current = current->forward[0];
+        delete tmp;
+    }
+
 }
 
 template<typename K, typename V>
 int SkipList<K, V>::get_random_level(){
 
-    int k = 1;
+    int k = 0;
     while (rand() % 2) {
         k++;
     }
     k = (k < _max_level) ? k : _max_level;
     return k;
 };
-// vim: et tw=100 ts=4 sw=4 cc=120
