@@ -22,6 +22,8 @@ int main() {
 	skipList.insert_element(19, "算法不迷路"); 
 	skipList.insert_element(19, "赶快关注吧你会发现详见很晚！"); 
 
+    skipList.search_range(4, 10);
+
     std::cout << "skipList size:" << skipList.size() << std::endl;
 
     skipList.dump_file();
