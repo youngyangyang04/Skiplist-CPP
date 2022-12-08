@@ -1,11 +1,3 @@
-
-<p align="center">
-  <a href="https://mp.weixin.qq.com/s/RsdcQ9umo09R6cfnwXZlrQ"><img src="https://img.shields.io/badge/PDF下载-代码随想录-blueviolet" alt=""></a>
-  <a href="https://mp.weixin.qq.com/s/b66DFkOp8OOxdZC_xLZxfw"><img src="https://img.shields.io/badge/刷题-微信群-green" alt=""></a>
-  <a href="https://space.bilibili.com/525438321"><img src="https://img.shields.io/badge/B站-代码随想录-orange" alt=""></a>
-  <a href="https://mp.weixin.qq.com/s/QVF6upVMSbgvZy8lHZS3CQ"><img src="https://img.shields.io/badge/知识星球-代码随想录-blue" alt=""></a>
-</p>
-
 > 版权申明： 本项目为我（[程序员Carl](https://github.com/youngyangyang04)）的原创。引用本项目文章请注明出处，例如：转自 https://github.com/youngyangyang04/Skiplist-CPP。
 > 发现恶意抄袭或搬运，会动用法律武器维护自己的权益。让我们一起维护一个良好的技术创作环境！
 
@@ -96,15 +88,8 @@ sh stress_test_start.sh
 
 大家好，我是程序员Carl，[《代码随想录》](https://programmercarl.com/other/publish.html)作者，哈工大师兄，先后在腾讯和百度从事分布式技术研发。
 
-
-# 公众号
-
-更多精彩文章持续更新，微信搜索：「代码随想录」第一时间围观，关注后回复：666，可以获得Carl所有算法专题原创PDF。
-
-<a name="公众号"></a>
-
-<div align="center"><img src="https://code-thinking-1253855093.file.myqcloud.com/pics/20211026122841.png" data-img="1" width="650" height="500"></img></div> 
-
-
+* [代码随想录网站](https://programmercarl.com)
+* [代码随想录Github](https://github.com/youngyangyang04/leetcode-master)
+* [代码随想录算法公开课](https://www.bilibili.com/video/BV1fA4y1o715)
 
 
