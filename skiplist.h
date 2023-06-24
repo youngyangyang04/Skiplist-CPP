@@ -12,7 +12,6 @@
 #include <cstring>
 #include <mutex>
 #include <fstream>
-#include <sstream>
 
 #define STORE_FILE "store/dumpFile"
 
