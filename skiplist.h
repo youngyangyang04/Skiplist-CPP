@@ -12,7 +12,6 @@
 #include <cstring>
 #include <mutex>
 #include <fstream>
-#include <sstream>
 
 #define STORE_FILE "store/dumpFile"
 
@@ -256,15 +255,11 @@ void SkipList<K, V>::load_file() {
         if (key->empty() || value->empty()) {
             continue;
         }
-        std::stringstream ss1(*key);
-        K k;
-        ss1 >> k;
-        std::stringstream ss2(*value);
-        V v;
-        ss2 >> v;
-        insert_element(k, v);
+        insert_element(*key, *value);
         std::cout << "key:" << *key << "value:" << *value << std::endl;
     }
+    delete key;
+    delete value;
     _file_reader.close();
 }
 
