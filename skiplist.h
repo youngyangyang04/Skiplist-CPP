@@ -327,6 +327,7 @@ void SkipList<K, V>::delete_element(K key) {
         }
 
         std::cout << "Successfully deleted key "<< key << std::endl;
+        delete current;
         _element_count --;
     }
     mtx.unlock();
