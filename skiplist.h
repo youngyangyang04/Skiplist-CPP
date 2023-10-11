@@ -255,7 +255,8 @@ void SkipList<K, V>::load_file() {
         if (key->empty() || value->empty()) {
             continue;
         }
-        insert_element(*key, *value);
+        // Define key as int type
+        insert_element(stoi(*key), *value);
         std::cout << "key:" << *key << "value:" << *value << std::endl;
     }
     _file_reader.close();

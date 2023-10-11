@@ -1,7 +1,9 @@
-👉 推荐 [Gitee同步](https://gitee.com/programmercarl/skiplist)
+👉  [Gitee同步](https://gitee.com/programmercarl/skiplist)
+👉 本项目为C++实现，如果想入门C++，推荐 [卡码网C++基础课](https://kamacoder.com/course.php?course_id=1)
 
 > 版权申明： 本项目为我（[程序员Carl](https://github.com/youngyangyang04)）的原创。引用本项目文章请注明出处，例如：转自 https://github.com/youngyangyang04/Skiplist-CPP。
 > 发现恶意抄袭或搬运，会动用法律武器维护自己的权益。让我们一起维护一个良好的技术创作环境！
+
 
 # [English Version](./README-en.md)
 
