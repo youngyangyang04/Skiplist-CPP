@@ -259,6 +259,8 @@ void SkipList<K, V>::load_file() {
         insert_element(stoi(*key), *value);
         std::cout << "key:" << *key << "value:" << *value << std::endl;
     }
+    delete key;
+    delete value;
     _file_reader.close();
 }
 
@@ -326,6 +328,7 @@ void SkipList<K, V>::delete_element(K key) {
         }
 
         std::cout << "Successfully deleted key "<< key << std::endl;
+        delete current;
         _element_count --;
     }
     mtx.unlock();
