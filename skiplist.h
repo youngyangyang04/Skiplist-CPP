@@ -61,7 +61,7 @@ Node<K, V>::Node(const K k, const V v, int level) {
 
 template<typename K, typename V> 
 Node<K, V>::~Node() {
-    for(int i=0 ; i < node_level;i++){
+    for(int i=0 ; i < node_level + 1 ; i++){
     	delete []forward[i];
     }
     delete []forward;
