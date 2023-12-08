@@ -93,6 +93,8 @@ public:
     void delete_element(K);
     void dump_file();
     void load_file();
+    //递归删除节点
+    void clear(Node<K,V>*);
     int size();
 
 private:
@@ -264,7 +266,7 @@ void SkipList<K, V>::load_file() {
     _file_reader.close();
 }
 
-// Get current SkipList size 
+// Get current SkipList size
 template<typename K, typename V> 
 int SkipList<K, V>::size() { 
     return _element_count;
@@ -403,7 +405,21 @@ SkipList<K, V>::~SkipList() {
     if (_file_reader.is_open()) {
         _file_reader.close();
     }
-    delete _header;
+
+    //递归删除跳表链条
+    if(_header->forward[0]!=nullptr){
+        clear(_header->forward[0]);
+    }
+    delete(_header);
+    
+}
+template <typename K, typename V>
+void SkipList<K, V>::clear(Node<K, V> * cur)
+{
+    if(cur->forward[0]!=nullptr){
+        clear(cur->forward[0]);
+    }
+    delete(cur);
 }
 
 template<typename K, typename V>
